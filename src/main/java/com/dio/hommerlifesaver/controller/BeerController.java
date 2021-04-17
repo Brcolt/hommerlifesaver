@@ -2,8 +2,10 @@ package com.dio.hommerlifesaver.controller;
 
 
 import com.dio.hommerlifesaver.dto.BeerDTO;
+import com.dio.hommerlifesaver.dto.QuantityDTO;
 import com.dio.hommerlifesaver.exception.BeerAlreadyRegisteredException;
 import com.dio.hommerlifesaver.exception.BeerNotFoundException;
+import com.dio.hommerlifesaver.exception.BeerStockExceededException;
 import com.dio.hommerlifesaver.service.BeerService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+
 @RequestMapping("api/v1/lifesaverbeers")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class BeerController implements BeerControllerDocs {
@@ -41,4 +44,10 @@ public class BeerController implements BeerControllerDocs {
     public void deleteById(@PathVariable Long id) throws BeerNotFoundException {
         beerService.deleteById(id);
     }
+
+    @PatchMapping("/{id}/increment")
+    public BeerDTO increment(@PathVariable Long id, @RequestBody @Valid QuantityDTO quantityDTO) throws BeerNotFoundException, BeerStockExceededException {
+        return beerService.increment(id, quantityDTO.getQuantity());
+    }
+
 }

@@ -5,6 +5,7 @@ import com.dio.hommerlifesaver.dto.BeerDTO;
 import com.dio.hommerlifesaver.entity.Beer;
 import com.dio.hommerlifesaver.exception.BeerAlreadyRegisteredException;
 import com.dio.hommerlifesaver.exception.BeerNotFoundException;
+import com.dio.hommerlifesaver.exception.BeerStockExceededException;
 import com.dio.hommerlifesaver.mapper.BeerMapper;
 import com.dio.hommerlifesaver.repository.BeerRepository;
 import lombok.AllArgsConstructor;
@@ -57,5 +58,16 @@ public class BeerService {
         if (optSavedBeer.isPresent()) {
             throw new BeerAlreadyRegisteredException(name);
         }
+    }
+
+    public BeerDTO increment(Long id, int quantityToIncrement) throws BeerNotFoundException, BeerStockExceededException {
+        Beer beerToIncrementStock = verifyIfExists(id);
+        int quantityAfterIncrement = quantityToIncrement + beerToIncrementStock.getQuantitiy();
+        if (quantityAfterIncrement <= beerToIncrementStock.getMax()) {
+            beerToIncrementStock.setQuantitiy(beerToIncrementStock.getQuantitiy() + quantityToIncrement);
+            Beer incrementedBeerStock = beerRepository.save(beerToIncrementStock);
+            return beerMapper.toDTO(incrementedBeerStock);
+        }
+        throw new BeerStockExceededException(id, quantityToIncrement);
     }
 }
