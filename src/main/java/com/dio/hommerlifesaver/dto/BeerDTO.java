@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -20,19 +21,19 @@ public class BeerDTO {
     private Long id;
 
     @NotNull
-    @Size(min=1, max=200)
+    @Size(min=1, max=200, message = "beer.name.invalid")
     private String name;
 
     @NotNull
-    @Size(min=1, max=200)
+    @Size(min=1, max=200, message = "beer.brand.invalid")
     private String brand;
 
     @NotNull
-    @Size(max=500)
+    @Max(500)
     private Integer max;
 
     @NotNull
-    @Size(max=100)
+    @Max(100)
     private Integer quantity;
 
     @NotNull
