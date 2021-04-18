@@ -27,7 +27,7 @@ public class Beer {
     private int max;
 
     @Column(nullable = false)
-    private int quantitiy;
+    private int quantity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

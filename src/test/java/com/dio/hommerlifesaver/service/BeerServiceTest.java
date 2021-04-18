@@ -54,6 +54,7 @@ public class BeerServiceTest {
 
         assertThat(createdBeerDTO.getId(), is(equalTo(expectedBeerDTO.getId())));
         assertThat(createdBeerDTO.getName(), is(equalTo(expectedBeerDTO.getName())));
+        assertThat(createdBeerDTO.getQuantity(), is(equalTo(expectedBeerDTO.getQuantity())));
 
     }
 
@@ -69,5 +70,37 @@ public class BeerServiceTest {
 
         // then
         assertThrows(BeerAlreadyRegisteredException.class, ()-> beerService.createBeer(expectedBeerDTO));
+    }
+
+    @Test
+    void whenValidBeerNameIsGivenThenReturnABeer() throws BeerNotFoundException {
+
+        //Given
+        BeerDTO expectedFoundBeerDTO = BeerDTOBuilder.builder().build().toBeerDTO();
+        Beer expectedFoundBear = beerMapper.toModel(expectedFoundBeerDTO);
+
+        //when
+        when(beerRepository.findByName(expectedFoundBeerDTO.getName())).thenReturn(Optional.of(expectedFoundBear));
+
+        //then
+        BeerDTO foundBeerDTO = beerService.findByName(expectedFoundBeerDTO.getName());
+
+        assertThat(foundBeerDTO, is(equalTo(expectedFoundBeerDTO)));
+
+    }
+
+    @Test
+    void whenNotRegistredBeerNameIsGivenThanThrowAnException() throws BeerNotFoundException {
+
+        //Given
+        BeerDTO expectedFoundBeerDTO = BeerDTOBuilder.builder().build().toBeerDTO();
+
+
+        //when
+        when(beerRepository.findByName(expectedFoundBeerDTO.getName())).thenReturn(Optional.empty());
+
+        //then
+        assertThrows(BeerNotFoundException.class, () -> beerService.findByName(expectedFoundBeerDTO.getName()));
+
     }
 }
